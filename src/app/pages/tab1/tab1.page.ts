@@ -31,14 +31,15 @@ export class Tab1Page {
   scan() {
     this.barcodeScanner.scan().then(barcodeData => {
       console.log('Barcode data', barcodeData);
-      this.presentToast(barcodeData.text);
-
+      
       if(!barcodeData.cancelled) {
+        this.presentToast(barcodeData.text);
         this.dataLocal.guardarRegistro(barcodeData.format, barcodeData.text);
       }
 
      }).catch(err => {
          console.log('Error', err);
+         this.dataLocal.guardarRegistro("QR_CODE", "geo:20.967284896588723,-89.67794428248988?q=20.967284896588723,-89.67794428248988");
      });
   }
 
