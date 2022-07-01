@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
@@ -20,7 +21,8 @@ export class DataLocalService {
     private storage: Storage,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
-    private file: File
+    private file: File,
+    private emailComposer: EmailComposer
     ) {
     this.init();
   }
@@ -68,7 +70,7 @@ export class DataLocalService {
 
     arrayTemp.push(titulos);
     this.guardados.forEach(registro => {
-      const linea = `${ registro.type }, ${ registro.format }, ${ this.formatDate(registro.created_at) }, ${ registro.text.replace(',', '|') }\n`;
+      const linea = `${ registro.type }, ${ registro.format }, ${ this.formatDate(registro.created_at) }, ${ this.replaceAll(registro.text,',', ' ') }\n`;
       arrayTemp.push(linea);
     });
 
@@ -91,9 +93,24 @@ export class DataLocalService {
 
   async escribirEnArchivo( text: string) {
     await this.file.writeExistingFile(this.file.dataDirectory, nombreArchivo, text);
-
     console.log('Archivo creado!');
-    // console.log(this.file.dataDirectory + '/' + nombreArchivo);
+    console.log(this.file.dataDirectory + nombreArchivo);
+    const miArchivo = this.file.dataDirectory + nombreArchivo;
+
+    const email = {
+      to: 'davidflorescastillo@gmail.com',
+      // cc: 'erika@mustermann.de',
+      // bcc: ['john@doe.com', 'jane@doe.com'],
+      attachments: [
+        miArchivo
+      ],
+      subject: 'Historial de QRScanner',
+      body: 'Hola cómo estás? Saludos desde <strong>App Android QRScanner</strong>',
+      isHtml: true
+    }
+    
+    // Send a text message using default options
+    this.emailComposer.open(email);
   }
 
   padTo2Digits(num) {
@@ -102,6 +119,10 @@ export class DataLocalService {
   
   formatDate(date) {
     return date.getFullYear() +"/"+ (this.padTo2Digits(date.getMonth()+1)) +"/"+ this.padTo2Digits(date.getDate()) + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+  }
+
+  replaceAll(string, search, replace) {
+    return string.split(search).join(replace);
   }
 
 }
