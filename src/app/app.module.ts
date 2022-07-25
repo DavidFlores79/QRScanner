@@ -12,6 +12,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { File } from "@awesome-cordova-plugins/file/ngx";
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
+import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,8 @@ import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     InAppBrowser,
     File,
-    EmailComposer
+    EmailComposer,
+    CallNumber
   ],
   bootstrap: [AppComponent],
 })

@@ -22,4 +22,9 @@ export class Tab2Page {
     
   }
 
+  borrarHistorial() {
+    
+    this.dataLocal.borrarHistorial();
+  }
+
 }

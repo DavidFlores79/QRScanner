@@ -14,10 +14,10 @@ export class Registro {
 
         this.created_at = new Date();
 
-        this.determinarTipo();
+        this.determinarTipo(this.format);
     }
 
-    private determinarTipo() {
+    private determinarTipo( format ) {
         const inicioTexto = this.text.substring(0, 4);
         console.log('tipo: ', inicioTexto);
         
@@ -42,6 +42,13 @@ export class Registro {
                 this.type = 'Desconocido';
                 this.icon = 'alert';
                 break;
+        }
+
+        
+        if(format.includes('EAN') || format.includes('UPC')) {
+            console.log('Format: ', format);
+            this.type = 'barras';
+            this.icon = 'barcode';
         }
     }
 }

@@ -5,7 +5,10 @@
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="enviarCorreo()">
+      <ion-button (click)="borrarHistorial()" class="ion-no-padding ion-no-border">
+        <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
+      </ion-button>
+      <ion-button (click)="enviarCorreo()" class="ion-no-padding ion-no-border">
         <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
       </ion-button>
     </ion-buttons>

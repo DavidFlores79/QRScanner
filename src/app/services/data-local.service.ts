@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { Registro } from '../models/registro.model';
 
@@ -22,7 +23,10 @@ export class DataLocalService {
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
     private file: File,
-    private emailComposer: EmailComposer
+    private emailComposer: EmailComposer,
+    private callNumber: CallNumber,
+    private toastController: ToastController,
+    private alertController: AlertController
     ) {
     this.init();
   }
@@ -58,8 +62,14 @@ export class DataLocalService {
       case 'geo:':
         this.navController.navigateForward(`tabs/tab2/mapa/${registro.text}`); //ruta completa
         break;
-    
+      case 'tel:':
+        this.llamarNumero( registro.text );
+        break;
+      case 'barras':
+        this.inAppBrowser.create(`https://www.google.com/search?q=${registro.text}`, '_system');
+        break;
       default:
+        this.presentToast('Tipo de Barcode desconocido.');
         break;
     }
   }
@@ -113,6 +123,17 @@ export class DataLocalService {
     this.emailComposer.open(email);
   }
 
+  llamarNumero( numero: string ) {
+    console.log('Llamar a numero: ', numero.substring(5));
+    this.callNumber.callNumber(numero.substring(5), true)
+                    .then(res => console.log('Launched dialer!', res))
+                    .catch(err => console.log('Error launching dialer', err));
+  }
+
+  async borrarHistorial() {
+    await this.presentAlert('Realmente desea borrar el historial de lecturas?');
+  }
+
   padTo2Digits(num) {
     return num.toString().padStart(2, '0');
   }
@@ -123,6 +144,40 @@ export class DataLocalService {
 
   replaceAll(string, search, replace) {
     return string.split(search).join(replace);
+  }
+
+  async presentToast(message: string) {
+    let toast = await this.toastController.create({
+      icon: 'help-circle',
+      message,
+      duration: 3000,
+      position: "top"
+    });
+
+    await toast.present();
+  }
+
+  async presentAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Borrar Historial',
+      message: message,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Borrar',
+          role: 'confirm',
+          handler: () => { 
+            this._storage.clear();
+            this.guardados = []; 
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 }
