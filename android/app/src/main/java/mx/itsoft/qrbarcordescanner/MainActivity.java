@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package mx.itsoft.qrbarcordescanner;
 
 import com.getcapacitor.BridgeActivity;
 

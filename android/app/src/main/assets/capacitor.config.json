@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "qrscanner",
+	"appId": "mx.itsoft.qrbarcordescanner",
+	"appName": "QR Barcode Scanner",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }
